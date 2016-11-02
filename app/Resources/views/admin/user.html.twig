@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ user.username }}</h1>
+        <hr>
+        <br>
+        <div class="well">
+            {% if user %}
+            <table>
+                <tr>
+                    <td>Voornaam:</td>
+                    <td>{{ user.firstName|capitalize }}</td>
+                </tr>
+                <tr>
+                    <td>Achternaam:</td>
+                    <td>{{ user.lastName|capitalize }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <td>Laatst online:</td>
+                    <td>{{ user.last_login }}</td>
+                </tr>
+                <tr>
+                    <td>Locked:</td>
+                    <td>{{ user.locked }}</td>
+                </tr>
+                <tr>
+                    <td>Roles:</td>
+                    <td>{% for roles in user.roles %}{{ roles }}, {% endfor %}</td>
+                </tr>
+            </table>
+            <br>
+            <a href="#" class="btn btn-info" role="button">Edit</a>
+        </div>
+        {% else %}
+            <h1>Gebruiker niet gevonden</h1>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -25,7 +25,7 @@ class UserController extends Controller
         $query = $this->getDoctrine()->getRepository('AppBundle:User')->findAll();
 
         if ($query != null)
-            $output = array('Users' => $query);
+            $output = array('users' => $query);
         else
             $output = null;
 
