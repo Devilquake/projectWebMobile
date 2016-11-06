@@ -9,11 +9,13 @@
 namespace AppBundle\ControllerRest;
 
 use AppBundle\Entity\Results;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ResultController extends Controller
 {
@@ -94,5 +96,55 @@ class ResultController extends Controller
         } else {
             return var_dump(http_response_code(400));
         }
+    }
+
+    /**
+     * @Route("/results", name="export_results_CSV")
+     */
+    public function getResultsCSVAction()
+    {
+        $container = $this->container;
+        $response = new StreamedResponse(function() use($container)
+        {
+            $em = $this->getDoctrine()->getManager();
+            $results = $em->getRepository('AppBundle:Results')->findAll();
+            $handle = fopen('php://output', 'r+');
+
+            $headers = array(
+                'Username',
+                'FirstName',
+                'LastName',
+                'Habit1',
+                'Habit2',
+                'Habit3',
+                'Calories',
+                'Weight'
+            );
+
+            fputcsv($handle, $headers);
+
+            foreach ($results as &$value) {
+
+                $output = array(
+                    $value->getUser()->getUsername(),
+                    $value->getUser()->getFirstName(),
+                    $value->getUser()->getLastName(),
+                    ($value->getHabit1() == true) ? 'true' : 'false',
+                    ($value->getHabit2() == true) ? 'true' : 'false',
+                    ($value->getHabit3() == true) ? 'true' : 'false',
+                    $value->getCalories(),
+                    $value->getWeight()
+                );
+
+                fputcsv($handle, $output);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition','attachment; filename="export.csv"');
+
+        return $response;
     }
 }
