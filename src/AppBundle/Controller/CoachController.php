@@ -20,6 +20,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class CoachController
+ * @package AppBundle\Controller
+ * @Security("has_role('ROLE_COACH')")
+ */
 class CoachController extends Controller
 {
     /**

@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class AdminController
  * @package AppBundle\Controller
+ * @Security("has_role('ROLE_ADMIN')")
  */
 class AdminController extends Controller
 {
